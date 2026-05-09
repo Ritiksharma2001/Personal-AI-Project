@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Voice Assistant</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+  <div class="container">
+
+    <div class="glow"></div>
+
+    <h1>🤖 JARVIS AI</h1>
+
+    <p class="subtitle">Your Smart Voice Assistant</p>
+
+    <div class="buttons">
+      <button class="start-btn" onclick="startListening()">
+        🎤 Start Assistant
+      </button>
+
+      <button class="stop-btn" onclick="stopListening()">
+        ⛔ Stop Mic
+      </button>
+
+      <button class="test-btn" onclick="speak('Everything working properly')">
+        🔊 Test Voice
+      </button>
+    </div>
+
+    <div class="wave">
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
+    <div id="output">
+      Ask me anything...
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+
+</body>
+</html>
