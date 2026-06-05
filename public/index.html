@@ -1,56 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Voice Assistant</title>
-
-  <link rel="stylesheet" href="style.css">
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JARVIS AI</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
 
-  <div class="container">
+  <div class="app">
 
-    <div class="glow"></div>
+    <aside class="sidebar">
+      <h2>🤖 JARVIS</h2>
+      <button onclick="newChat()">+ New Chat</button>
 
-    <h1>🤖 JARVIS AI</h1>
+      <div class="side-info">
+        <p>🎤 Voice Assistant</p>
+        <p>⚡ Powered by Gemini</p>
+        <p>🧠 Smart AI Mode</p>
+      </div>
+    </aside>
 
-    <p class="subtitle">Your Smart Voice Assistant</p>
+    <main class="chat-area">
+      <header class="topbar">
+        <div>
+          <h1>Jarvis AI Assistant</h1>
+          <p>Ask anything by typing or voice</p>
+        </div>
 
-    <div class="buttons">
-      <button class="start-btn" onclick="startListening()">
-        🎤 Start Assistant
-      </button>
+        <button onclick="testVoice()">🔊 Test Voice</button>
+      </header>
 
-      <button class="stop-btn" onclick="stopListening()">
-        ⛔ Stop Mic
-      </button>
+      <section id="chatBox" class="chat-box">
+        <div class="message ai">
+          <div class="avatar">🤖</div>
+          <div class="bubble">
+            Welcome back Ritik sir. How can I help you today?
+          </div>
+        </div>
+      </section>
 
-      <button class="test-btn" onclick="speak('Everything working properly')">
-        🔊 Test Voice
-      </button>
-    </div>
-
-    <div class="wave">
-      <span></span>
-      <span></span>
-      <span></span>
-      <span></span>
-      <span></span>
-    </div>
-
-    <div id="output">
-      Ask me anything...
-    </div>
+      <div class="controls">
+        <button onclick="startListening()">🎤</button>
+        <input id="userInput" type="text" placeholder="Message Jarvis..." />
+        <button onclick="sendMessage()">➤</button>
+        <button onclick="stopListening()">⛔</button>
+      </div>
+    </main>
 
   </div>
 
   <script src="script.js"></script>
-
 </body>
 </html>

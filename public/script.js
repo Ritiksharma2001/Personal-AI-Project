@@ -1,264 +1,151 @@
 let recognition;
 let isListening = false;
 
+const chatBox = document.getElementById("chatBox");
+const userInput = document.getElementById("userInput");
 
-// 🎤 START LISTENING
-function startListening() {
+/* Add message to chat */
+function addMessage(sender, text) {
+  const message = document.createElement("div");
+  message.className = `message ${sender}`;
 
-  if (isListening) return;
+  const avatar = document.createElement("div");
+  avatar.className = "avatar";
+  avatar.textContent = sender === "user" ? "🧑" : "🤖";
 
-  recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+  const bubble = document.createElement("div");
+  bubble.className = "bubble";
+  bubble.textContent = text;
 
-  recognition.lang = 'en-IN';
-  recognition.continuous = false;
-  recognition.interimResults = false;
+  message.appendChild(avatar);
+  message.appendChild(bubble);
 
-  isListening = true;
-
-  updateOutput('🎤 Listening...');
-
-  recognition.onresult = function(event) {
-
-    const text = event.results[0][0].transcript.toLowerCase();
-
-    updateOutput('🧑 You: ' + text);
-
-    // 🚀 COMMANDS
-
-    // OPEN WEBSITES
-    if (text.includes('open youtube')) {
-      speak('Opening YouTube');
-      window.open('https://youtube.com');
-      stopListening();
-      return;
-    }
-
-    if (text.includes('open chrome')) {
-      speak('Opening Chrome');
-      window.open('https:// google.com/chrome');
-      stopListening();
-      return;
-    }
-
-    if (text.includes('open google')) {
-      speak('Opening Google');
-      window.open('https://google.com');
-      stopListening();
-      return;
-    }
-
-    if (text.includes('open instagram')) {
-      speak('Opening Instagram');
-      window.open('https://instagram.com');
-      stopListening();
-      return;
-    }
-
-    if (text.includes('open chat')) {
-      speak('Opening ChatGPT');
-      window.open('https://chatgpt.com/');
-      stopListening();
-      return;
-    }
-
-
-    // SEARCH GOOGLE
-    if (text.includes('search')) {
-
-      const searchText = text.replace('search', '');
-
-      speak('Searching ' + searchText);
-
-      window.open(
-        `https://www.google.com/search?q=${searchText}`
-      );
-
-      stopListening();
-      return;
-    }
-
-
-    // TIME
-    if (text.includes('what time')) {
-
-      const time = new Date().toLocaleTimeString();
-
-      speak('Current time is ' + time);
-
-      stopListening();
-      return;
-    }
-
-
-    // DATE
-    if (text.includes('what date')) {
-
-      const date = new Date().toDateString();
-
-      speak('Today is ' + date);
-
-      stopListening();
-      return;
-    }
-
-
-    // BATTERY STATUS
-    if (text.includes('battery')) {
-
-      navigator.getBattery().then(function(battery) {
-
-        const level = Math.floor(battery.level * 100);
-
-        speak('Battery is at ' + level + ' percent');
-      });
-
-      stopListening();
-      return;
-    }
-
-
-    // WEATHER
-    if (text.includes('weather')) {
-
-      speak('Opening weather report');
-
-      window.open('https://www.google.com/search?q=weather');
-
-      stopListening();
-      return;
-    }
-
-
-    // JOKES
-    if (text.includes('tell me a joke')) {
-
-      const jokes = [
-        'Why do programmers hate nature? Too many bugs.',
-        'I told my computer I needed a break. It said no problem and crashed.',
-        'Why was the JavaScript developer sad? Because he did not Node how to Express himself.'
-      ];
-
-      const randomJoke = jokes[Math.floor(Math.random() * jokes.length)];
-
-      updateOutput('🤖 AI: ' + randomJoke);
-
-      speak(randomJoke);
-
-      stopListening();
-      return;
-    }
-
-
-    // 🤖 AI RESPONSE
-    getAIResponse(text);
-
-    stopListening();
-  };
-
-
-  recognition.onerror = function(event) {
-
-    console.log('Mic Error:', event.error);
-
-    updateOutput('❌ Mic Error: ' + event.error);
-
-    isListening = false;
-  };
-
-
-  recognition.onend = function() {
-
-    isListening = false;
-
-    console.log('Mic stopped');
-  };
-
-
-  recognition.start();
+  chatBox.appendChild(message);
+  chatBox.scrollTop = chatBox.scrollHeight;
 }
 
+/* Send typed message */
+async function sendMessage() {
+  const text = userInput.value.trim();
 
-// ⛔ STOP MIC
-function stopListening() {
+  if (!text) return;
 
-  if (recognition && isListening) {
+  addMessage("user", text);
+  userInput.value = "";
 
-    recognition.stop();
-
-    isListening = false;
-
-    updateOutput('⛔ Mic Stopped');
-  }
+  await askAI(text);
 }
 
-
-// 🤖 GEMINI AI RESPONSE
-async function getAIResponse(message) {
-
-  speak('Thinking...');
+/* Ask backend AI */
+async function askAI(message) {
+  addMessage("ai", "Thinking...");
 
   try {
-
-    const response = await fetch('http://localhost:3000/ask', {
-
-      method: 'POST',
-
+    const response = await fetch("/ask", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json"
       },
-
       body: JSON.stringify({ message })
     });
 
-
     const data = await response.json();
 
-
-    if (!data.reply) {
-      throw new Error('No reply from AI');
-    }
-
-
-    updateOutput('🤖 AI: ' + data.reply);
+    const aiMessages = document.querySelectorAll(".message.ai .bubble");
+    aiMessages[aiMessages.length - 1].textContent = data.reply;
 
     speak(data.reply);
 
   } catch (error) {
+    const aiMessages = document.querySelectorAll(".message.ai .bubble");
+    aiMessages[aiMessages.length - 1].textContent =
+      "Sorry, AI se connect nahi ho pa raha.";
 
     console.error(error);
-
-    updateOutput('❌ Error connecting to AI');
-
-    speak('Fuck you, Speak properly');
   }
 }
 
+/* Voice start */
+function startListening() {
+  if (isListening) return;
 
-// 🔊 SPEAK FUNCTION
-function speak(message) {
+  const SpeechRecognition =
+    window.SpeechRecognition || window.webkitSpeechRecognition;
 
-  window.speechSynthesis.cancel();
+  if (!SpeechRecognition) {
+    addMessage("ai", "Sorry, your browser voice recognition support nahi karta.");
+    return;
+  }
 
-  const speech = new SpeechSynthesisUtterance(message);
+  recognition = new SpeechRecognition();
+  recognition.lang = "en-IN";
+  recognition.continuous = false;
+  recognition.interimResults = false;
 
-  speech.lang = 'en-IN';
+  isListening = true;
+  addMessage("ai", "Listening... 🎤");
+
+  recognition.start();
+
+  recognition.onresult = async function (event) {
+    const text = event.results[0][0].transcript;
+
+    addMessage("user", text);
+    await askAI(text);
+  };
+
+  recognition.onerror = function () {
+    addMessage("ai", "Mic error aa gaya. Please try again.");
+    isListening = false;
+  };
+
+  recognition.onend = function () {
+    isListening = false;
+  };
+}
+
+/* Voice stop */
+function stopListening() {
+  if (recognition) {
+    recognition.stop();
+    isListening = false;
+    addMessage("ai", "Mic stopped.");
+  }
+}
+
+/* Speak AI reply */
+function speak(text) {
+  if (!("speechSynthesis" in window)) return;
+
+  const speech = new SpeechSynthesisUtterance(text);
+  speech.lang = "hi-IN";
   speech.rate = 1;
   speech.pitch = 1;
 
+  window.speechSynthesis.cancel();
   window.speechSynthesis.speak(speech);
 }
 
-// 🖥️ UPDATE OUTPUT BOX
-function updateOutput(message) {
+/* Test voice */
+function testVoice() {
+  speak("Everything working properly, Ritik sir.");
+}
 
-    document.getElementById('output').innerText = message;
+/* New chat */
+function newChat() {
+  chatBox.innerHTML = `
+    <div class="message ai">
+      <div class="avatar">🤖</div>
+      <div class="bubble">
+        New chat started. How can I help you?
+      </div>
+    </div>
+  `;
+}
+
+/* Enter key send */
+userInput.addEventListener("keydown", function (e) {
+  if (e.key === "Enter") {
+    sendMessage();
   }
-  
-  
-  // 🚀 WELCOME MESSAGE WHEN PAGE LOADS
-  window.onload = function() {
-  
-    updateOutput('🤖 Jarvis Ready...');
-  
-    speak('hey, how can i help you today');
-  }
+});

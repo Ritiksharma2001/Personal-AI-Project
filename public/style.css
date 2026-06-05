@@ -1,162 +1,228 @@
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  background: #020617;
+  color: white;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.app {
+  display: flex;
+  height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 260px;
+  background: #020617;
+  border-right: 1px solid rgba(255,255,255,0.1);
+  padding: 24px;
+}
+
+.sidebar h2 {
+  margin-bottom: 25px;
+}
+
+.sidebar button {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  background: #6366f1;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.side-info {
+  margin-top: 30px;
+  color: #cbd5e1;
+  line-height: 2;
+  font-size: 14px;
+}
+
+/* Chat area */
+.chat-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: radial-gradient(circle at top, #111827, #020617 60%);
+}
+
+.topbar {
+  padding: 20px 28px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.topbar h1 {
+  font-size: 24px;
+}
+
+.topbar p {
+  color: #94a3b8;
+  font-size: 14px;
+}
+
+.topbar button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 10px;
+  background: #22c55e;
+  color: white;
+  cursor: pointer;
+}
+
+/* Messages */
+.chat-box {
+  flex: 1;
+  padding: 28px;
+  overflow-y: auto;
+}
+
+.message {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 18px;
+  animation: fadeIn 0.25s ease;
+}
+
+.message.user {
+  justify-content: flex-end;
+}
+
+.avatar {
+  width: 38px;
+  height: 38px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+}
+
+.message.user .avatar {
+  order: 2;
+}
+
+.bubble {
+  max-width: 70%;
+  padding: 14px 16px;
+  border-radius: 18px;
+  line-height: 1.6;
+  background: rgba(255,255,255,0.08);
+  color: #f8fafc;
+}
+
+.message.user .bubble {
+  background: #6366f1;
+}
+
+/* Input controls */
+.controls {
+  padding: 18px 24px;
+  display: flex;
+  gap: 10px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  background: rgba(2,6,23,0.9);
+}
+
+.controls input {
+  flex: 1;
+  padding: 15px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.1);
+  outline: none;
+  background: #0f172a;
+  color: white;
+  font-size: 15px;
+}
+
+.controls button {
+  width: 52px;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  background: #334155;
+  color: white;
+  font-size: 18px;
+}
+
+.controls button:hover,
+.sidebar button:hover,
+.topbar button:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
   }
-  
-  body {
-    font-family: 'Poppins', sans-serif;
-    background: #020617;
-    color: white;
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .app {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    padding: 15px;
     display: flex;
-    justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    overflow: hidden;
+    gap: 12px;
   }
-  
-  .container {
-    position: relative;
-    width: 90%;
-    max-width: 700px;
-    text-align: center;
-    padding: 40px;
-    border-radius: 25px;
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255,255,255,0.1);
-    box-shadow: 0 0 40px rgba(99,102,241,0.3);
+
+  .sidebar h2 {
+    margin-bottom: 0;
+    font-size: 18px;
   }
-  
-  .glow {
-    position: absolute;
-    width: 300px;
-    height: 300px;
-    background: #6366f1;
-    filter: blur(120px);
-    top: -100px;
-    left: 50%;
-    transform: translateX(-50%);
-    opacity: 0.4;
-    z-index: -1;
+
+  .sidebar button {
+    width: auto;
   }
-  
-  h1 {
-    font-size: 3rem;
-    margin-bottom: 10px;
-    letter-spacing: 2px;
+
+  .side-info {
+    display: none;
   }
-  
-  .subtitle {
-    color: #cbd5e1;
-    margin-bottom: 35px;
-    font-size: 1.1rem;
+
+  .topbar {
+    padding: 15px;
   }
-  
-  .buttons {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 15px;
-    margin-bottom: 35px;
+
+  .topbar h1 {
+    font-size: 18px;
   }
-  
-  button {
-    border: none;
-    padding: 14px 24px;
-    border-radius: 14px;
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: 600;
-    transition: 0.3s ease;
+
+  .topbar button {
+    display: none;
   }
-  
-  .start-btn {
-    background: #22c55e;
-    color: white;
+
+  .chat-box {
+    padding: 18px;
   }
-  
-  .stop-btn {
-    background: #ef4444;
-    color: white;
+
+  .bubble {
+    max-width: 85%;
   }
-  
-  .test-btn {
-    background: #6366f1;
-    color: white;
+
+  .controls {
+    padding: 12px;
   }
-  
-  button:hover {
-    transform: translateY(-4px) scale(1.03);
-    box-shadow: 0 0 20px rgba(255,255,255,0.25);
-  }
-  
-  #output {
-    margin-top: 20px;
-    background: rgba(255,255,255,0.05);
-    padding: 20px;
-    border-radius: 16px;
-    min-height: 120px;
-    text-align: left;
-    line-height: 1.7;
-    color: #f8fafc;
-    overflow-y: auto;
-  }
-  
-  .wave {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 6px;
-    margin-bottom: 25px;
-    height: 60px;
-  }
-  
-  .wave span {
-    width: 8px;
-    height: 20px;
-    background: #6366f1;
-    border-radius: 10px;
-    animation: wave 1s infinite ease-in-out;
-  }
-  
-  .wave span:nth-child(2) {
-    animation-delay: 0.1s;
-  }
-  
-  .wave span:nth-child(3) {
-    animation-delay: 0.2s;
-  }
-  
-  .wave span:nth-child(4) {
-    animation-delay: 0.3s;
-  }
-  
-  .wave span:nth-child(5) {
-    animation-delay: 0.4s;
-  }
-  
-  @keyframes wave {
-    0%, 100% {
-      height: 20px;
-    }
-  
-    50% {
-      height: 55px;
-    }
-  }
-  
-  @media (max-width: 600px) {
-  
-    h1 {
-      font-size: 2rem;
-    }
-  
-    .buttons {
-      flex-direction: column;
-    }
-  
-    button {
-      width: 100%;
-    }
-  }
+}
