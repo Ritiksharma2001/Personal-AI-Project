@@ -225,102 +225,90 @@ body {
   }
 }
 
-@media (max-width: 700px) {
-  body {
-    overflow: hidden;
+/* MOBILE FIX */
+
+@media (max-width:700px){
+
+  body{
+    height:100vh;
+    overflow:hidden;
   }
 
-  .app {
-    flex-direction: column;
+  .app{
+    height:100vh;
+    display:flex;
+    flex-direction:column;
   }
 
-  .sidebar {
-    width: 100%;
-    height: auto;
-    padding: 12px 14px;
-    border-right: none;
-    border-bottom: 1px solid #222;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+  .chat-area{
+    flex:1;
+    min-height:0;
+    display:flex;
+    flex-direction:column;
   }
 
-  .sidebar h2 {
-    font-size: 18px;
-    margin-bottom: 0;
-    white-space: nowrap;
+  .chat-box{
+    flex:1;
+    overflow-y:auto;
+    padding:15px;
   }
 
-  .sidebar button {
-    width: auto;
-    padding: 10px 12px;
-    font-size: 13px;
+
+  /* tools */
+  .tools{
+    flex-shrink:0;
+    display:flex;
+    overflow-x:auto;
+    gap:8px;
+    padding:8px;
   }
 
-  .side-info {
-    display: none;
+
+  .tools button{
+    min-width:max-content;
   }
 
-  .topbar {
-    padding: 12px 14px;
+
+  .tools input{
+    width:120px;
   }
 
-  .topbar h1 {
-    font-size: 17px;
+
+
+  /* input always visible */
+  .controls{
+
+    flex-shrink:0;
+
+    display:flex;
+
+    padding:10px;
+
+    gap:8px;
+
   }
 
-  .topbar p {
-    display: none;
+
+  .controls input{
+
+    display:block;
+
+    flex:1;
+
+    min-width:0;
+
   }
 
-  .topbar button {
-    display: none;
+
+  .controls button{
+
+    width:42px;
+
+    height:42px;
+
   }
 
-  .chat-box {
-    padding: 14px;
-  }
 
-  .avatar {
-    width: 30px;
-    height: 30px;
-  }
-
-  .bubble {
-    max-width: 82%;
-    font-size: 14px;
-    padding: 12px 13px;
-  }
-
-  .tools {
-    padding: 10px;
-    overflow-x: auto;
-  }
-
-  .tools button {
-    white-space: nowrap;
-    font-size: 13px;
-  }
-
-  .tools input {
-    max-width: 150px;
-    font-size: 12px;
-  }
-
-  .controls {
-    padding: 10px;
-    gap: 7px;
-  }
-
-  .controls input {
-    padding: 12px;
-    font-size: 14px;
-  }
-
-  .controls button {
-    width: 42px;
-    min-width: 42px;
-  }
 }
 
 @media (max-width: 420px) {
