@@ -1,66 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>JARVIS AI</title>
-  <link rel="stylesheet" href="style.css" />
-  <link 
-rel="stylesheet" 
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JARVIS AI</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="app">
+      <aside class="sidebar">
+        <h2>JARVIS</h2>
+        <button onclick="newChat()">New Chat</button>
 
-  <div class="app">
-
-    <aside class="sidebar">
-      <h2>JARVIS</h2>
-      <button onclick="newChat()">New Chat</button>
-
-      <div class="side-info">
-        <p> Voice Assistant</p>
-        <p> Powered by Gemini</p>
-        <p>Smart AI Mode</p>
-      </div>
-    </aside>
-
-    <main class="chat-area">
-      <header class="topbar">
-        <div>
-          <h1>Jarvis AI Assistant</h1>
-          <p>Ask anything by typing or voice</p>
+        <div class="side-info">
+          <p>Voice Assistant</p>
+          <p>Powered by Gemini</p>
+          <p>Smart AI Mode</p>
         </div>
+      </aside>
 
-        <button onclick="testVoice()">Test Voice</button>
-      </header>
-
-      <section id="chatBox" class="chat-box">
-        <div class="message ai">
-          <div class="avatar"></div>
-          <div class="bubble">
-            Welcome back Ritik sir. How can I help you today?
+      <main class="chat-area">
+        <header class="topbar">
+          <div>
+            <h1>Jarvis AI Assistant</h1>
+            <p>Ask anything by typing or voice</p>
           </div>
+
+          <button onclick="testVoice()">Test Voice</button>
+        </header>
+
+        <section id="chatBox" class="chat-box">
+          <div class="message ai">
+            <div class="avatar"></div>
+            <div class="bubble">
+              Welcome back Ritik sir. How can I help you today?
+            </div>
+          </div>
+        </section>
+
+        <div class="tools">
+          <button onclick="searchWeb()">Search Web</button>
+          <input type="file" id="fileInput" />
+          <button onclick="uploadFile()">Upload & Ask</button>
         </div>
-      </section>
 
-      <div class="tools">
-        <button onclick="searchWeb()">Search Web</button>
-        <input type="file" id="fileInput" />
-        <button onclick="uploadFile()">Upload & Ask</button>
-      </div>
+        <div class="controls">
+          <button onclick="startListening()">
+            <i class="fa-solid fa-microphone"></i>
+          </button>
+          <input id="userInput" type="text" placeholder="Message Jarvis..." />
+          <button onclick="sendMessage()">
+            <i class="fa-solid fa-arrow-up"></i>
+          </button>
+          <button onclick="stopListening()">
+            <i class="fa-solid fa-microphone-slash"></i>
+          </button>
+        </div>
+      </main>
+    </div>
 
-      <div class="controls">
-        <button onclick="startListening()">
-          <i class="fa-solid fa-microphone"></i>
-        </button>
-        <input id="userInput" type="text" placeholder="Message Jarvis..." />
-        <button onclick="sendMessage()">➤</button>
-        <button onclick="stopListening()">⛔</button>
-      </div>
-    </main>
-
-  </div>
-
-  <script src="script.js"></script>
-</body>
+    <script src="script.js"></script>
+  </body>
 </html>

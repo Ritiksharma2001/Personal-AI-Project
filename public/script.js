@@ -42,7 +42,7 @@ function addMessage(sender, text) {
   if (sender === "ai") {
     const speakBtn = document.createElement("button");
     speakBtn.className = "speak-btn";
-    speakBtn.textContent = "🔊";
+    speakBtn.innerHTML = `<i class="fa-solid fa-volume-high"></i>`;
     speakBtn.onclick = function () {
       speak(bubble.textContent);
     };
@@ -131,12 +131,12 @@ async function askAI(message) {
     const response = await fetch("/ask", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         message: message,
-        memory: getMemory()
-      })
+        memory: getMemory(),
+      }),
     });
 
     const data = await response.json();
@@ -146,7 +146,6 @@ async function askAI(message) {
     aiMessages[aiMessages.length - 1].textContent = data.reply;
 
     saveMemory(message, data.reply);
-
   } catch (error) {
     const aiMessages = document.querySelectorAll(".message.ai .bubble");
 
@@ -282,7 +281,7 @@ async function uploadFile() {
   try {
     const response = await fetch("/upload", {
       method: "POST",
-      body: formData
+      body: formData,
     });
 
     const data = await response.json();
@@ -291,7 +290,6 @@ async function uploadFile() {
     aiMessages[aiMessages.length - 1].textContent = data.reply;
 
     saveMemory(question, data.reply);
-
   } catch (error) {
     const aiMessages = document.querySelectorAll(".message.ai .bubble");
     aiMessages[aiMessages.length - 1].textContent =
