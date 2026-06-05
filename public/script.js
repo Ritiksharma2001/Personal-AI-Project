@@ -4,7 +4,10 @@ let isListening = false;
 const chatBox = document.getElementById("chatBox");
 const userInput = document.getElementById("userInput");
 
-/* Add message to chat */
+function removeEmojis(text) {
+  return text.replace(/[\u{1F300}-\u{1FAFF}]/gu, "");
+}
+
 function addMessage(sender, text) {
   const message = document.createElement("div");
   message.className = `message ${sender}`;
@@ -24,10 +27,8 @@ function addMessage(sender, text) {
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-/* Send typed message */
 async function sendMessage() {
   const text = userInput.value.trim();
-
   if (!text) return;
 
   addMessage("user", text);
@@ -36,7 +37,6 @@ async function sendMessage() {
   await askAI(text);
 }
 
-/* Ask backend AI */
 async function askAI(message) {
   addMessage("ai", "Thinking...");
 
@@ -65,7 +65,6 @@ async function askAI(message) {
   }
 }
 
-/* Voice start */
 function startListening() {
   if (isListening) return;
 
@@ -104,7 +103,6 @@ function startListening() {
   };
 }
 
-/* Voice stop */
 function stopListening() {
   if (recognition) {
     recognition.stop();
@@ -113,12 +111,13 @@ function stopListening() {
   }
 }
 
-/* Speak AI reply */
 function speak(text) {
   if (!("speechSynthesis" in window)) return;
 
-  const speech = new SpeechSynthesisUtterance(text);
-  speech.lang = "hi-IN";
+  const cleanText = removeEmojis(text);
+
+  const speech = new SpeechSynthesisUtterance(cleanText);
+  speech.lang = "en-US";
   speech.rate = 1;
   speech.pitch = 1;
 
@@ -126,12 +125,10 @@ function speak(text) {
   window.speechSynthesis.speak(speech);
 }
 
-/* Test voice */
 function testVoice() {
-  speak("Everything working properly, Ritik sir.");
+  speak("Everything is working properly, Ritik sir.");
 }
 
-/* New chat */
 function newChat() {
   chatBox.innerHTML = `
     <div class="message ai">
@@ -143,7 +140,6 @@ function newChat() {
   `;
 }
 
-/* Enter key send */
 userInput.addEventListener("keydown", function (e) {
   if (e.key === "Enter") {
     sendMessage();
