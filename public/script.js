@@ -13,7 +13,6 @@ function removeEmojis(text) {
 
 /* ADD MESSAGE */
 function addMessage(sender, text) {
-
   const message = document.createElement("div");
   message.className = `message ${sender}`;
 
@@ -25,11 +24,22 @@ function addMessage(sender, text) {
   bubble.className = "bubble";
   bubble.textContent = text;
 
+  if (sender === "ai") {
+    const speakBtn = document.createElement("button");
+    speakBtn.className = "speak-btn";
+    speakBtn.textContent = "🔊";
+    speakBtn.onclick = function () {
+      speak(bubble.textContent);
+    };
+
+    bubble.appendChild(document.createElement("br"));
+    bubble.appendChild(speakBtn);
+  }
+
   message.appendChild(avatar);
   message.appendChild(bubble);
 
   chatBox.appendChild(message);
-
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 
@@ -227,9 +237,9 @@ async function askAI(message) {
     ].textContent = data.reply;
 
 
-    speak(
-      data.reply
-    );
+    // speak(
+    //   data.reply
+    // );
 
 
   }

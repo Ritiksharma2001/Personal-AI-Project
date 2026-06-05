@@ -162,6 +162,16 @@ body {
   opacity: 0.9;
 }
 
+.speak-btn {
+  margin-top: 10px;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 8px;
+  background: #334155;
+  color: white;
+  cursor: pointer;
+}
+
 /* Animation */
 @keyframes fadeIn {
   from {
