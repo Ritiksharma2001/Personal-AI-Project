@@ -1,95 +1,141 @@
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
+const multer = require("multer");
+const pdfParse = require("pdf-parse");
 require("dotenv").config();
 
 const app = express();
+const upload = multer({ storage: multer.memoryStorage() });
 
 app.use(cors());
-app.use(express.json());
-
+app.use(express.json({ limit: "20mb" }));
 app.use(express.static(path.join(__dirname, "public")));
 
-// 🔑 Your Gemini API key
 const API_KEY = process.env.GEMINI_API_KEY;
 
-// 🌐 Serve frontend (index.html)
 app.get("/", (req, res) => {
-  console.log("Serving index.html...");
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-// 🤖 AI Route
 app.post("/ask", async (req, res) => {
-  const userMessage = req.body.message;
+  const { message, memory } = req.body;
 
   try {
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`,
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          contents: [
-            {
-              parts: [{
-                text: `
+          contents: [{
+            parts: [{
+              text: `
 You are JARVIS, an advanced personal AI assistant.
 
-Your abilities:
-- Answer any question clearly
-- Generate business ideas
-- Help create startups
-- Suggest products
-- Help with coding and debugging
-- Create marketing strategies
-- Write emails and content
-- Explain difficult topics simply
-- Give project ideas
-- Help with learning
-- Give career advice
-- Analyze problems
-- Act like a professional assistant
+Reply only in English.
+Be smart, practical, helpful and professional.
+You can help with business ideas, products, coding, marketing, learning, content, strategy, planning and problem solving.
 
-Personality:
-- Smart like a real AI assistant
-- Professional but friendly
-- Give practical answers
-- Think step-by-step when needed
-- Give creative ideas
-- Reply only in English
-- Never use Hindi/Hinglish
-- Avoid unnecessary emojis
+Previous memory:
+${memory || "No memory yet"}
 
 User message:
-${userMessage}
+${message}
 `
-              }]
-            }
-          ]
+            }]
+          }]
         })
       }
     );
 
     const data = await response.json();
-    console.log("Gemini Response:", data);
-
-    const reply =
-      data.candidates?.[0]?.content?.parts?.[0]?.text ||
-      "No response from AI";
-
+    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "No response.";
     res.json({ reply });
 
   } catch (error) {
-    console.error("Server error:", error);
-    res.status(500).json({ reply: "Error connecting to Gemini" });
+    console.error(error);
+    res.status(500).json({ reply: "Server error." });
   }
 });
 
-// 🚀 Start server (ONLY ONCE)
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+app.post("/upload", upload.single("file"), async (req, res) => {
+  try {
+    const file = req.file;
+    const question = req.body.question || "Analyze this file.";
+
+    if (!file) {
+      return res.json({ reply: "No file uploaded." });
+    }
+
+    let fileText = "";
+
+    if (file.mimetype === "application/pdf") {
+      const pdfData = await pdfParse(file.buffer);
+      fileText = pdfData.text;
+    } else if (file.mimetype.startsWith("image/")) {
+      const base64Image = file.buffer.toString("base64");
+
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{
+              parts: [
+                { text: question },
+                {
+                  inline_data: {
+                    mime_type: file.mimetype,
+                    data: base64Image
+                  }
+                }
+              ]
+            }]
+          })
+        }
+      );
+
+      const data = await response.json();
+      const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "Could not analyze image.";
+      return res.json({ reply });
+    } else {
+      fileText = file.buffer.toString("utf-8");
+    }
+
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{
+            parts: [{
+              text: `
+Read this file content and answer the user question.
+
+Question:
+${question}
+
+File content:
+${fileText.slice(0, 15000)}
+`
+            }]
+          }]
+        })
+      }
+    );
+
+    const data = await response.json();
+    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "Could not read file.";
+    res.json({ reply });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ reply: "File processing error." });
+  }
 });
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
