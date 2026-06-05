@@ -8,7 +8,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use(express.static(__dirname));
+app.use(express.static(path.join(__dirname, "public")));
 
 // 🔑 Your Gemini API key
 const API_KEY = process.env.GEMINI_API_KEY;
@@ -16,7 +16,7 @@ const API_KEY = process.env.GEMINI_API_KEY;
 // 🌐 Serve frontend (index.html)
 app.get("/", (req, res) => {
   console.log("Serving index.html...");
-  res.sendFile(path.join(__dirname, "index.html"));
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 // 🤖 AI Route
