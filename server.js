@@ -2,7 +2,6 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const multer = require("multer");
-const pdfParse = require("pdf-parse");
 require("dotenv").config();
 
 const app = express();
@@ -32,10 +31,8 @@ app.post("/ask", async (req, res) => {
             parts: [{
               text: `
 You are JARVIS, an advanced personal AI assistant.
-
 Reply only in English.
 Be smart, practical, helpful and professional.
-You can help with business ideas, products, coding, marketing, learning, content, strategy, planning and problem solving.
 
 Previous memory:
 ${memory || "No memory yet"}
@@ -68,41 +65,11 @@ app.post("/upload", upload.single("file"), async (req, res) => {
       return res.json({ reply: "No file uploaded." });
     }
 
-    let fileText = "";
-
-    if (file.mimetype === "application/pdf") {
-      const pdfData = await pdfParse(file.buffer);
-      fileText = pdfData.text;
-    } else if (file.mimetype.startsWith("image/")) {
-      const base64Image = file.buffer.toString("base64");
-
-      const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            contents: [{
-              parts: [
-                { text: question },
-                {
-                  inline_data: {
-                    mime_type: file.mimetype,
-                    data: base64Image
-                  }
-                }
-              ]
-            }]
-          })
-        }
-      );
-
-      const data = await response.json();
-      const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "Could not analyze image.";
-      return res.json({ reply });
-    } else {
-      fileText = file.buffer.toString("utf-8");
+    if (!file.mimetype.startsWith("image/")) {
+      return res.json({ reply: "For now, please upload an image file only." });
     }
+
+    const base64Image = file.buffer.toString("base64");
 
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`,
@@ -111,24 +78,22 @@ app.post("/upload", upload.single("file"), async (req, res) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           contents: [{
-            parts: [{
-              text: `
-Read this file content and answer the user question.
-
-Question:
-${question}
-
-File content:
-${fileText.slice(0, 15000)}
-`
-            }]
+            parts: [
+              { text: question },
+              {
+                inline_data: {
+                  mime_type: file.mimetype,
+                  data: base64Image
+                }
+              }
+            ]
           }]
         })
       }
     );
 
     const data = await response.json();
-    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "Could not read file.";
+    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "Could not analyze image.";
     res.json({ reply });
 
   } catch (error) {
