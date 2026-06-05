@@ -35,7 +35,9 @@ app.post("/ask", async (req, res) => {
           contents: [
             {
               parts: [{
-                text: "You are a smart AI assistant like Jarvis. Be helpful, short, and friendly. Reply in Hinglish. " + userMessage
+                text:
+                "You are Jarvis, a smart professional AI assistant. Always reply only in English. Give clear, natural, helpful answers. Never use Hindi or Hinglish. Do not describe emojis while speaking. " 
+                + userMessage
               }]
             }
           ]

@@ -59,7 +59,7 @@ async function askAI(message) {
   } catch (error) {
     const aiMessages = document.querySelectorAll(".message.ai .bubble");
     aiMessages[aiMessages.length - 1].textContent =
-      "Sorry, AI se connect nahi ho pa raha.";
+      "Sorry, I am unable to connect right now.";
 
     console.error(error);
   }
@@ -72,7 +72,7 @@ function startListening() {
     window.SpeechRecognition || window.webkitSpeechRecognition;
 
   if (!SpeechRecognition) {
-    addMessage("ai", "Sorry, your browser voice recognition support nahi karta.");
+    addMessage("ai", "Sorry, your browser voice recognition not support.");
     return;
   }
 
@@ -94,7 +94,7 @@ function startListening() {
   };
 
   recognition.onerror = function () {
-    addMessage("ai", "Mic error aa gaya. Please try again.");
+    addMessage("ai", "Mic error. Please try again.");
     isListening = false;
   };
 
@@ -126,7 +126,7 @@ function speak(text) {
 }
 
 function testVoice() {
-  speak("Everything is working properly, Ritik sir.");
+  speak("Everything is working properly, sir.");
 }
 
 function newChat() {
